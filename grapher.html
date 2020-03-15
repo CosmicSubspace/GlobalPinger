@@ -10,16 +10,85 @@
 
 <!--<script src="https://cdn.jsdelivr.net/combine/npm/chart.js@2,npm/moment@2"></script>-->
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
+
+<style>
+.region{
+font-weight: bold;
+font-size:x-large;
+}
+.hostname{
+font-family:monospace;
+}
+.instutution{}
+</style>
 </head>
 
 <body>
 
-<h1>Overseas Internet Congestion Map</h1>
+<h1>Overseas Internet Congestion Monitor</h1>
 
-<h4>Japan</h4>
-<p><b>JAIST</b> ftp.jaist.ac.jp</p>
-<canvas id="cc_jaist" width="320" height="240"></canvas>
+<div id="korea">
+<span class="region">Korea</span> <br>
+<span class="institution">NeoWiz</span> <br>
+<span class="hostname">ftp.neowiz.com</span>
+<canvas class="chartcanvas" id="cc_neowiz" width="480" height="240"></canvas>
+</div>
 
+<div id="japan">
+<span class="region">Japan</span> <br>
+<span class="institution">JAIST</span> <br>
+<span class="hostname">ftp.jaist.ac.jp</span>
+<canvas class="chartcanvas" id="cc_jaist" width="480" height="240"></canvas>
+</div>
+
+<div id="china">
+<span class="region">China</span> <br>
+<span class="institution">DevCloud</span> <br>
+<span class="hostname">mirrors.huaweicloud.com</span>
+<canvas class="chartcanvas" id="cc_devcloud" width="480" height="240"></canvas>
+</div>
+
+<div id="singapore">
+<span class="region">Singapore</span> <br>
+<span class="institution">Andrew Yong</span> <br>
+<span class="hostname">mirror.0x.sg</span>
+<canvas class="chartcanvas" id="cc_ayong" width="480" height="240"></canvas>
+</div>
+
+<div id="usa_west">
+<span class="region">USA - West</span> <br>
+<span class="institution">University of California at Davis</span> <br>
+<span class="hostname">mirror.math.ucdavis.edu</span>
+<canvas class="chartcanvas" id="cc_ucdavis" width="480" height="240"></canvas>
+</div>
+
+<div id="usa_east">
+<span class="region">USA - East</span> <br>
+<span class="institution">University of Maryland</span> <br>
+<span class="hostname">mirror.umd.edu</span>
+<canvas class="chartcanvas" id="cc_umd" width="480" height="240"></canvas>
+</div>
+
+<div id="uk">
+<span class="region">UK</span> <br>
+<span class="institution">IT Services, University of Oxford</span> <br>
+<span class="hostname">mirror.ox.ac.uk</span>
+<canvas class="chartcanvas" id="cc_oxford" width="480" height="240"></canvas>
+</div>
+
+<div id="austraila">
+<span class="region">Austraila</span> <br>
+<span class="institution">Melbourne IT</span> <br>
+<span class="hostname">ubuntu.melbourneitmirror.net</span>
+<canvas class="chartcanvas" id="cc_melbournit" width="480" height="240"></canvas>
+</div>
+
+<div id="8888">
+<span class="region">N/A</span> <br>
+<span class="institution">Google DNS</span> <br>
+<span class="hostname">8.8.8.8</span>
+<canvas class="chartcanvas" id="cc_8888" width="480" height="240"></canvas>
+</div>
 
 <script>
 
@@ -117,7 +186,15 @@ function setupChart(chart_id, csv_path){
     });
 }
 
-setupChart("cc_jaist", "data/jaist.csv");
+setupChart("cc_neowiz", "adata/neowiz.csv");
+setupChart("cc_jaist", "adata/jaist.csv");
+setupChart("cc_devcloud", "adata/devcloud.csv");
+setupChart("cc_ayong", "adata/ayong.csv");
+setupChart("cc_ucdavis", "adata/ucdavis.csv");
+setupChart("cc_umd", "adata/umd.csv");
+setupChart("cc_oxford", "adata/oxford.csv");
+setupChart("cc_melbournit", "adata/melbournit.csv");
+setupChart("cc_8888", "adata/8888.csv");
 
 
 </script>
