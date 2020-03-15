@@ -65,6 +65,7 @@ import time
 import datetime
 import os
 import os.path
+import sys
 
 class PingResult:
     def __init__(self,*, timestamp, hostname, ip, total, received, lossrate, rtt_min, rtt_avg, rtt_max, rtt_mdv):
@@ -190,13 +191,13 @@ class PingResult:
             )
 
     
-def ping2(host, count=1000):
+def ping(host, count=3):
     #out=subprocess.check_output("ping -q -c {} {}".format(count,host))
     p=subprocess.Popen(["ping","-q","-c",str(count),host],
                        stdout=subprocess.PIPE,
                        stderr=subprocess.PIPE)
     cout,cerr=p.communicate()
-    return decode_linux_ping_output(cout)
+    return PingResult.from_console_output(cout,time.time())
 
 def pingall(targets, count=1000, interval=1):
     proc=dict()
@@ -219,50 +220,65 @@ def pingall(targets, count=1000, interval=1):
         rres[tname]=proc[tname].communicate()[0]
 
     for tname in targets:
-        res[tname]=PingResult.from_console_output(rres[tname],starttime)
+        try:
+            res[tname]=PingResult.from_console_output(rres[tname],starttime)
+        except:
+            print("Error while parsing",tname)
+            print("output:",rres[tname])
 
     return res
 
-print("Pinging...")
-r=pingall(
-    ping_targets,
-    count=1,
-    interval=1)
-for i in r:
-    print(i)
-    print(r[i])
-    print()
-
-print("Writing data to CSV...")
-if not os.path.isdir("data"):
-    os.mkdir("data")
-for i in r:
-    filepath="data/"+i+".csv"
-    header_required=not os.path.isfile(filepath)
-        
-    with open(filepath, "a", newline='') as f:
-        writer=csv.writer(f)
-        if header_required:
-            writer.writerow(PingResult.csv_header())
-        writer.writerow(r[i].as_csv_row())
-print("Written.")
-
-print("Writing abridged CSV...")
-if not os.path.isdir("adata"):
-    os.mkdir("adata")
-for i in r:
-    filepath="adata/"+i+".csv"
-    origfilepath="data/"+i+".csv"
-    ll=subprocess.check_output(["tail", "-n", "48", origfilepath]).decode("utf-8")
-    fl=subprocess.check_output(["head", "-n", "1", origfilepath]).decode("utf-8")
-
-    if ll.startswith(fl):
-        res=ll
+def test():
+    print(ping("8.8.8.8"))
+    
+def main():
+    if "--count" in sys.argv:
+        count=int(sys.argv[sys.argv.index("--count")+1])
     else:
-        res=fl+ll
-    with open(filepath,"w") as f:
-        f.write(res)
-    
-    
+        count=3
+    print("Pinging...")
+    print("count =",count)
+    r=pingall(
+        ping_targets,
+        count=count,
+        interval=1)
+    for i in r:
+        #print(i)
+        #print(r[i])
+        #print()
+        pass
+
+    print("Writing data to CSV...")
+    if not os.path.isdir("data"):
+        os.mkdir("data")
+    for i in r:
+        filepath="data/"+i+".csv"
+        header_required=not os.path.isfile(filepath)
             
-print("Done!")
+        with open(filepath, "a", newline='') as f:
+            writer=csv.writer(f)
+            if header_required:
+                writer.writerow(PingResult.csv_header())
+            writer.writerow(r[i].as_csv_row())
+    print("Written.")
+
+    print("Writing abridged CSV...")
+    if not os.path.isdir("adata"):
+        os.mkdir("adata")
+    for i in r:
+        filepath="adata/"+i+".csv"
+        origfilepath="data/"+i+".csv"
+        ll=subprocess.check_output(["tail", "-n", "48", origfilepath]).decode("utf-8")
+        fl=subprocess.check_output(["head", "-n", "1", origfilepath]).decode("utf-8")
+
+        if ll.startswith(fl):
+            res=ll
+        else:
+            res=fl+ll
+        with open(filepath,"w") as f:
+            f.write(res)
+
+    print("Done!")
+
+if __name__=="__main__":
+    main()
