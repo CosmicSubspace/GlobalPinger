@@ -3,17 +3,22 @@
 <head>
 <title>GlobalPinger</title>
 
+<script src="https://cdn.jsdelivr.net/npm/moment@2/moment.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2/dist/Chart.min.js"></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.bundle.js"></script>-->
+
+<!--<script src="https://cdn.jsdelivr.net/combine/npm/chart.js@2,npm/moment@2"></script>-->
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
 </head>
 
 <body>
 
+<h1>Overseas Internet Congestion Map</h1>
 
-<p>Look ma, a graph!</p>
-
-<canvas id="chartcanvas" width="640" height="480"></canvas>
+<h4>Japan</h4>
+<p><b>JAIST</b> ftp.jaist.ac.jp</p>
+<canvas id="cc_jaist" width="320" height="240"></canvas>
 
 
 <script>
@@ -26,6 +31,7 @@ function setupChart(chart_id, csv_path){
     var chart = new Chart(ctx, {
         type: 'scatter',
 
+
         data: {
             datasets: [{
                 label: 'avg RTT',
@@ -35,15 +41,28 @@ function setupChart(chart_id, csv_path){
             }]
         },
 
-        options: {}
+        options: {
+            responsive:false,
+            scales: {
+                xAxes: [{
+                    type: 'time',
+                    position: 'bottom',
+                    time: {
+                        displayFormats: {
+                            unit: 'hour'
+                        }
+                    }
+                }]
+            }
+        }
     });
     
     function dataToChart(datapoints){
-    
             for (var i=0;i<datapoints.length;i++){
                 console.log(datapoints[i]);
+                var t=new Date(datapoints[i].timestamp*1000)
                 darray.push({
-                    'x':datapoints[i].timestamp,
+                    'x':t,
                     'y':datapoints[i].rtt_avg
                 });
                 chart.update();
@@ -64,7 +83,7 @@ function setupChart(chart_id, csv_path){
     });
 }
 
-setupChart("chartcanvas", "data/8888.csv");
+setupChart("cc_jaist", "data/jaist.csv");
 
 
 </script>
