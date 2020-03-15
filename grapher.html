@@ -20,12 +20,23 @@ font-size:x-large;
 font-family:monospace;
 }
 .instutution{}
+.code{
+font-family:monospace;
+background:#DDD;
+}
 </style>
 </head>
 
 <body>
 
 <h1>Overseas Internet Congestion Monitor</h1>
+
+<p>
+This server pings some servers around the globe to test how reliable the international internet connection is.<br>
+The servers were chosen manually from <a href="https://launchpad.net/ubuntu/+archivemirrors">Ubuntu's Archive mirrors.</a> <br>
+Command run is <span class="code">ping -q -c 100 -i 1 HOSTNAME</span>  (runs every hour) <br>
+This server's ISP is SK Broadband in Korea.
+</p>
 
 <div id="korea">
 <span class="region">Korea</span> <br>
@@ -84,7 +95,7 @@ font-family:monospace;
 </div>
 
 <div id="8888">
-<span class="region">N/A</span> <br>
+<span class="region">Google</span> <br>
 <span class="institution">Google DNS</span> <br>
 <span class="hostname">8.8.8.8</span>
 <canvas class="chartcanvas" id="cc_8888" width="480" height="240"></canvas>
