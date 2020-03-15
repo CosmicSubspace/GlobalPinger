@@ -105,15 +105,15 @@ function setupChart(chart_id, csv_path){
         data: {
             datasets: [{
                 label: 'avg RTT',
-                backgroundColor: 'rgb(255, 99, 132)',
-                borderColor: 'rgb(255, 99, 132)',
+                backgroundColor: '#22F',
+                borderColor: '#22F',
                 data: darray_rtt,
                 yAxisID:"yax_rtt"
             },
             {
                 label: 'Loss %',
-                backgroundColor: 'rgb(99, 255, 132)',
-                borderColor: 'rgb(99, 255, 132)',
+                backgroundColor: '#F22',
+                borderColor: '#F22',
                 data: darray_lrate,
                 yAxisID:"yax_lrate"
             }]
@@ -138,7 +138,8 @@ function setupChart(chart_id, csv_path){
                         ticks:{
                             suggestedMin:0,
                             suggestedMax:400,
-                            stepSize:100
+                            stepSize:100,
+                            fontColor:"#22F"
                         }
                     },
                     {
@@ -148,7 +149,8 @@ function setupChart(chart_id, csv_path){
                         ticks:{
                             suggestedMin:0,
                             suggestedMax:40,
-                            stepSize:10
+                            stepSize:10,
+                            fontColor:"#F22"
                         }
                     }
                 ]
