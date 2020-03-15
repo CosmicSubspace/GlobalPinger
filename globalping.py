@@ -20,11 +20,6 @@ Singapore
 Andrew Yong
 http://mirror.0x.sg/ubuntu/
 
-[osuosl]
-USA (West)
-Ohio State University Open Source Lab
-http://ubuntu.osuosl.org/ubuntu/
-
 [ucdavis]
 USA (West)
 University of California at Davis
@@ -231,7 +226,7 @@ def pingall(targets, count=1000, interval=1):
 print("Pinging...")
 r=pingall(
     ping_targets,
-    count=10,
+    count=1,
     interval=1)
 for i in r:
     print(i)
@@ -252,3 +247,22 @@ for i in r:
         writer.writerow(r[i].as_csv_row())
 print("Written.")
 
+print("Writing abridged CSV...")
+if not os.path.isdir("adata"):
+    os.mkdir("adata")
+for i in r:
+    filepath="adata/"+i+".csv"
+    origfilepath="data/"+i+".csv"
+    ll=subprocess.check_output(["tail", "-n", "48", origfilepath]).decode("utf-8")
+    fl=subprocess.check_output(["head", "-n", "1", origfilepath]).decode("utf-8")
+
+    if ll.startswith(fl):
+        res=ll
+    else:
+        res=fl+ll
+    with open(filepath,"w") as f:
+        f.write(res)
+    
+    
+            
+print("Done!")
