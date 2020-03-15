@@ -3,9 +3,9 @@
 <head>
 <title>GlobalPinger</title>
 
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.15.5/dist/xlsx.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2/dist/Chart.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datasource@0.1.0/dist/chartjs-plugin-datasource.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
 </head>
 
 <body>
@@ -17,49 +17,56 @@
 
 
 <script>
-var ctx=document.getElementById("chartcanvas").getContext("2d");
 
-var myChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-        datasets: [
-        {
-            type: 'line',
-            yAxisID: 'temperature',
-            backgroundColor: 'transparent',
-            borderColor: 'rgb(255, 99, 132)',
-            pointBackgroundColor: 'rgb(255, 99, 132)',
-            tension: 0,
-            fill: false
-        }, {
-            yAxisID: 'precipitation',
-            backgroundColor: 'rgba(54, 162, 235, 0.5)',
-            borderColor: 'transparent'
-        }]
-    },
-    plugins: [ChartDataSource],
-    options: {
-        scales: {
-            yAxes: [{
-                id: 'temperature',
-                gridLines: {
-                    drawOnChartArea: false
-                }
-            }, {
-                id: 'precipitation',
-                position: 'right',
-                gridLines: {
-                    drawOnChartArea: false
-                }
+function setupChart(chart_id, csv_path){
+    var ctx=document.getElementById(chart_id).getContext("2d");
+
+    var darray=[];
+
+    var chart = new Chart(ctx, {
+        type: 'scatter',
+
+        data: {
+            datasets: [{
+                label: 'avg RTT',
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: darray
             }]
         },
-        plugins:{
-            datasource:{
-                url:"data/8888.csv"
+
+        options: {}
+    });
+    
+    function dataToChart(datapoints){
+    
+            for (var i=0;i<datapoints.length;i++){
+                console.log(datapoints[i]);
+                darray.push({
+                    'x':datapoints[i].timestamp,
+                    'y':datapoints[i].rtt_avg
+                });
+                chart.update();
             }
         }
-    }
-});
+
+    Papa.parse(csv_path, {
+        download: true,
+        header:true,
+        skipEmptyLines:true,
+        complete: function(results) {
+                console.log(results);
+            
+                datapoints=results.data;
+                
+                dataToChart(datapoints);
+            }
+    });
+}
+
+setupChart("chartcanvas", "data/8888.csv");
+
+
 </script>
 </body>
 
