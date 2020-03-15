@@ -231,7 +231,7 @@ def pingall(targets, count=1000, interval=1):
 print("Pinging...")
 r=pingall(
     ping_targets,
-    count=1,
+    count=10,
     interval=1)
 for i in r:
     print(i)
