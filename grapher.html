@@ -26,7 +26,8 @@
 function setupChart(chart_id, csv_path){
     var ctx=document.getElementById(chart_id).getContext("2d");
 
-    var darray=[];
+    var darray_rtt=[];
+    var darray_lrate=[];
 
     var chart = new Chart(ctx, {
         type: 'scatter',
@@ -37,7 +38,15 @@ function setupChart(chart_id, csv_path){
                 label: 'avg RTT',
                 backgroundColor: 'rgb(255, 99, 132)',
                 borderColor: 'rgb(255, 99, 132)',
-                data: darray
+                data: darray_rtt,
+                yAxisID:"yax_rtt"
+            },
+            {
+                label: 'Loss %',
+                backgroundColor: 'rgb(99, 255, 132)',
+                borderColor: 'rgb(99, 255, 132)',
+                data: darray_lrate,
+                yAxisID:"yax_lrate"
             }]
         },
 
@@ -48,11 +57,32 @@ function setupChart(chart_id, csv_path){
                     type: 'time',
                     position: 'bottom',
                     time: {
-                        displayFormats: {
-                            unit: 'hour'
+                        unit:"hour",
+                        stepSize:"1"
+                    }
+                }],
+                yAxes: [
+                    {
+                        id:"yax_rtt",
+                        type:"linear",
+                        position:"left",
+                        ticks:{
+                            suggestedMin:0,
+                            suggestedMax:400,
+                            stepSize:100
+                        }
+                    },
+                    {
+                        id:"yax_lrate",
+                        type:"linear",
+                        position:"right",
+                        ticks:{
+                            suggestedMin:0,
+                            suggestedMax:40,
+                            stepSize:10
                         }
                     }
-                }]
+                ]
             }
         }
     });
@@ -61,9 +91,13 @@ function setupChart(chart_id, csv_path){
             for (var i=0;i<datapoints.length;i++){
                 console.log(datapoints[i]);
                 var t=new Date(datapoints[i].timestamp*1000)
-                darray.push({
+                darray_rtt.push({
                     'x':t,
                     'y':datapoints[i].rtt_avg
+                });
+                darray_lrate.push({
+                    'x':t,
+                    'y':datapoints[i].lossrate*100
                 });
                 chart.update();
             }
