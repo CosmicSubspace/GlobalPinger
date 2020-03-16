@@ -46,7 +46,7 @@ background:#DDD;
 <p>
 This server pings some servers around the globe to test how reliable the international internet connection is.<br>
 The servers were chosen manually from <a href="https://launchpad.net/ubuntu/+archivemirrors">Ubuntu's Archive mirrors.</a> <br>
-Command run is <span class="code">ping -q -c 100 -i 1 HOSTNAME</span>  (runs every hour) <br>
+Command run is <span class="code">ping -q -c 100 -i 1 HOSTNAME</span>  (runs every ~50min) <br>
 This server's ISP is SK Broadband in Korea.
 </p>
 
@@ -56,63 +56,63 @@ This server's ISP is SK Broadband in Korea.
 <span class="region">Korea</span> <br>
 <span class="institution">NeoWiz</span> <br>
 <span class="hostname">ftp.neowiz.com</span>
-<canvas class="chartcanvas" id="cc_neowiz" width="480" height="240"></canvas>
+<canvas class="chartcanvas" id="cc_neowiz" width="600" height="300"></canvas>
 </div>
 
 <div id="japan">
 <span class="region">Japan</span> <br>
 <span class="institution">JAIST</span> <br>
 <span class="hostname">ftp.jaist.ac.jp</span>
-<canvas class="chartcanvas" id="cc_jaist" width="480" height="240"></canvas>
+<canvas class="chartcanvas" id="cc_jaist" width="600" height="300"></canvas>
 </div>
 
 <div id="china">
 <span class="region">China</span> <br>
 <span class="institution">DevCloud</span> <br>
 <span class="hostname">mirrors.huaweicloud.com</span>
-<canvas class="chartcanvas" id="cc_devcloud" width="480" height="240"></canvas>
+<canvas class="chartcanvas" id="cc_devcloud" width="600" height="300"></canvas>
 </div>
 
 <div id="singapore">
 <span class="region">Singapore</span> <br>
 <span class="institution">Andrew Yong</span> <br>
 <span class="hostname">mirror.0x.sg</span>
-<canvas class="chartcanvas" id="cc_ayong" width="480" height="240"></canvas>
+<canvas class="chartcanvas" id="cc_ayong" width="600" height="300"></canvas>
 </div>
 
 <div id="usa_west">
 <span class="region">USA - West</span> <br>
 <span class="institution">University of California at Davis</span> <br>
 <span class="hostname">mirror.math.ucdavis.edu</span>
-<canvas class="chartcanvas" id="cc_ucdavis" width="480" height="240"></canvas>
+<canvas class="chartcanvas" id="cc_ucdavis" width="600" height="300"></canvas>
 </div>
 
 <div id="usa_east">
 <span class="region">USA - East</span> <br>
 <span class="institution">University of Maryland</span> <br>
 <span class="hostname">mirror.umd.edu</span>
-<canvas class="chartcanvas" id="cc_umd" width="480" height="240"></canvas>
+<canvas class="chartcanvas" id="cc_umd" width="600" height="300"></canvas>
 </div>
 
 <div id="uk">
 <span class="region">UK</span> <br>
 <span class="institution">IT Services, University of Oxford</span> <br>
 <span class="hostname">mirror.ox.ac.uk</span>
-<canvas class="chartcanvas" id="cc_oxford" width="480" height="240"></canvas>
+<canvas class="chartcanvas" id="cc_oxford" width="600" height="300"></canvas>
 </div>
 
 <div id="austraila">
 <span class="region">Austraila</span> <br>
 <span class="institution">Melbourne IT</span> <br>
 <span class="hostname">ubuntu.melbourneitmirror.net</span>
-<canvas class="chartcanvas" id="cc_melbournit" width="480" height="240"></canvas>
+<canvas class="chartcanvas" id="cc_melbournit" width="600" height="300"></canvas>
 </div>
 
 <div id="8888">
 <span class="region">Google</span> <br>
 <span class="institution">Google DNS</span> <br>
 <span class="hostname">8.8.8.8</span>
-<canvas class="chartcanvas" id="cc_8888" width="480" height="240"></canvas>
+<canvas class="chartcanvas" id="cc_8888" width="600" height="300"></canvas>
 </div>
 
 </div>
@@ -126,11 +126,21 @@ function setupChart(chart_id, csv_path){
     var darray_lrate=[];
 
     var now_d=new Date();
+
+    var tomm_d=new Date(new Date().setHours(0,0,0,0)+24*60*60*1000);
+    var tomm_s=(tomm_d.getMonth()+1)+"/"+tomm_d.getDate();
+
     var today_d=new Date(new Date().setHours(0,0,0,0));
     var today_s=(today_d.getMonth()+1)+"/"+today_d.getDate();
+    var today_center_d=new Date(new Date().setHours(0,0,0,0)+24*60*60*1000*0.5);
 
     var yesterday_d=new Date(new Date().setHours(0,0,0,0)-24*60*60*1000);
     var yesterday_s=(yesterday_d.getMonth()+1)+"/"+yesterday_d.getDate();
+    var yesterday_center_d=new Date(new Date().setHours(0,0,0,0)-24*60*60*1000*0.5);
+
+    var tda_d=new Date(new Date().setHours(0,0,0,0)-24*60*60*1000*2);
+    var tda_s=(tda_d.getMonth()+1)+"/"+tda_d.getDate();
+    var tda_center_d=new Date(new Date().setHours(0,0,0,0)-24*60*60*1000*1.5);
 
     var chart = new Chart(ctx, {
         type: 'scatter',
@@ -163,7 +173,10 @@ function setupChart(chart_id, csv_path){
                     type: 'time',
                     position: 'bottom',
                     bounds:"ticks",
-
+                    ticks:{
+                      min:tda_d,
+                      max:tomm_d
+                    },
                     time: {
                         unit:"hour",
                         stepSize:6,
@@ -181,7 +194,10 @@ function setupChart(chart_id, csv_path){
                             suggestedMin:0,
                             suggestedMax:400,
                             stepSize:100,
-                            fontColor:"#22F"
+                            fontColor:"#22F",
+                            callback: function(value, index, values) {
+                                return value+"ms";
+                            }
                         }
                     },
                     {
@@ -192,7 +208,10 @@ function setupChart(chart_id, csv_path){
                             suggestedMin:0,
                             suggestedMax:40,
                             stepSize:10,
-                            fontColor:"#F22"
+                            fontColor:"#F22",
+                            callback: function(value, index, values) {
+                                return value+"%";
+                            }
                         }
                     }
                 ]
@@ -204,23 +223,59 @@ function setupChart(chart_id, csv_path){
                         mode:"vertical",
                         scaleID:"xax_time",
                         borderColor:"#000",
-                        value:today_d,
+                        drawTime:"beforeDatasetsDraw",
+                        value:today_d
+                    },{
+                        type:"line",
+                        mode:"vertical",
+                        scaleID:"xax_time",
+                        borderColor:"#000",
+                        drawTime:"beforeDatasetsDraw",
+                        value:yesterday_d
+                    },
+                    {
+                        type:"line",
+                        mode:"vertical",
+                        scaleID:"xax_time",
+                        borderColor:"#0000",
+                        drawTime:"beforeDatasetsDraw",
+                        value:today_center_d,
                         label:{
                             content:today_s,
                             enabled:true,
-                            position:"top"
+                            position:"center",
+                            backgroundColor:"#0000",
+                            fontColor:"#000"
                         }
                     },
                     {
                         type:"line",
                         mode:"vertical",
                         scaleID:"xax_time",
-                        borderColor:"#000",
-                        value:yesterday_d,
+                        borderColor:"#0000",
+                        drawTime:"beforeDatasetsDraw",
+                        value:tda_center_d,
+                        label:{
+                            content:tda_s,
+                            enabled:true,
+                            position:"center",
+                            backgroundColor:"#0000",
+                            fontColor:"#000"
+                        }
+                    },
+                    {
+                        type:"line",
+                        mode:"vertical",
+                        scaleID:"xax_time",
+                        borderColor:"#0000",
+                        drawTime:"beforeDatasetsDraw",
+                        value:yesterday_center_d,
                         label:{
                             content:yesterday_s,
                             enabled:true,
-                            position:"top"
+                            position:"center",
+                            backgroundColor:"#0000",
+                            fontColor:"#000"
                         }
                     },
                     {
@@ -228,7 +283,13 @@ function setupChart(chart_id, csv_path){
                         mode:"vertical",
                         scaleID:"xax_time",
                         borderColor:"#2F2",
-                        value:now_d
+                        drawTime:"beforeDatasetsDraw",
+                        value:now_d,
+                        label:{
+                            content:"now",
+                            enabled:true,
+                            position:"top"
+                        }
                     }
                 ]
             }

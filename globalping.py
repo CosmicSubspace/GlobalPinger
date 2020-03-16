@@ -268,7 +268,7 @@ def main():
     for i in r:
         filepath="adata/"+i+".csv"
         origfilepath="data/"+i+".csv"
-        ll=subprocess.check_output(["tail", "-n", "48", origfilepath]).decode("utf-8")
+        ll=subprocess.check_output(["tail", "-n", "100", origfilepath]).decode("utf-8")
         fl=subprocess.check_output(["head", "-n", "1", origfilepath]).decode("utf-8")
 
         if ll.startswith(fl):
