@@ -6,6 +6,8 @@
 <script src="https://cdn.jsdelivr.net/npm/moment@2/moment.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2/dist/Chart.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@0.5.7/chartjs-plugin-annotation.min.js"></script>
 <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.bundle.js"></script>-->
 
 <!--<script src="https://cdn.jsdelivr.net/combine/npm/chart.js@2,npm/moment@2"></script>-->
@@ -123,6 +125,13 @@ function setupChart(chart_id, csv_path){
     var darray_rtt=[];
     var darray_lrate=[];
 
+    var now_d=new Date();
+    var today_d=new Date(new Date().setHours(0,0,0,0));
+    var today_s=(today_d.getMonth()+1)+"/"+today_d.getDate();
+
+    var yesterday_d=new Date(new Date().setHours(0,0,0,0)-24*60*60*1000);
+    var yesterday_s=(yesterday_d.getMonth()+1)+"/"+yesterday_d.getDate();
+
     var chart = new Chart(ctx, {
         type: 'scatter',
 
@@ -133,6 +142,7 @@ function setupChart(chart_id, csv_path){
                 backgroundColor: '#22F',
                 borderColor: '#22F',
                 data: darray_rtt,
+                xAsixID:"xax_time",
                 yAxisID:"yax_rtt"
             },
             {
@@ -140,6 +150,7 @@ function setupChart(chart_id, csv_path){
                 backgroundColor: '#F22',
                 borderColor: '#F22',
                 data: darray_lrate,
+                xAsixID:"xax_time",
                 yAxisID:"yax_lrate"
             }]
         },
@@ -148,11 +159,17 @@ function setupChart(chart_id, csv_path){
             responsive:false,
             scales: {
                 xAxes: [{
+                    id:"xax_time",
                     type: 'time',
                     position: 'bottom',
+                    bounds:"ticks",
+
                     time: {
                         unit:"hour",
-                        stepSize:"1"
+                        stepSize:6,
+                        displayFormats:{
+                            hour:"HH"//"M/D HH:mm"
+                        }
                     }
                 }],
                 yAxes: [
@@ -179,13 +196,48 @@ function setupChart(chart_id, csv_path){
                         }
                     }
                 ]
+            },
+            annotation:{
+                annotations:[
+                    {
+                        type:"line",
+                        mode:"vertical",
+                        scaleID:"xax_time",
+                        borderColor:"#000",
+                        value:today_d,
+                        label:{
+                            content:today_s,
+                            enabled:true,
+                            position:"top"
+                        }
+                    },
+                    {
+                        type:"line",
+                        mode:"vertical",
+                        scaleID:"xax_time",
+                        borderColor:"#000",
+                        value:yesterday_d,
+                        label:{
+                            content:yesterday_s,
+                            enabled:true,
+                            position:"top"
+                        }
+                    },
+                    {
+                        type:"line",
+                        mode:"vertical",
+                        scaleID:"xax_time",
+                        borderColor:"#2F2",
+                        value:now_d
+                    }
+                ]
             }
-        }
+        },
     });
-    
+
     function dataToChart(datapoints){
             for (var i=0;i<datapoints.length;i++){
-                console.log(datapoints[i]);
+                //console.log(datapoints[i]);
                 var t=new Date(datapoints[i].timestamp*1000)
                 darray_rtt.push({
                     'x':t,
@@ -204,10 +256,10 @@ function setupChart(chart_id, csv_path){
         header:true,
         skipEmptyLines:true,
         complete: function(results) {
-                console.log(results);
-            
+                //console.log(results);
+
                 datapoints=results.data;
-                
+
                 dataToChart(datapoints);
             }
     });
