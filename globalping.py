@@ -239,7 +239,7 @@ def ping_and_write_results(ping_targets, count):
         with open(filepath,"w") as f:
             f.write(res)
 
-    print("Done!")
+    print("Done!\n")
 
 if __name__=="__main__":
     main()

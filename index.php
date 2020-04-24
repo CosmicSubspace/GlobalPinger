@@ -4,7 +4,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 $conf= json_decode(file_get_contents("config.json"),True);
-$target_list=$conf["TargetList"];
+
 ?>
 
 <!DOCTYPE html>
@@ -13,13 +13,8 @@ $target_list=$conf["TargetList"];
 <title>GlobalPinger</title>
 
 <script src="https://cdn.jsdelivr.net/npm/moment@2/moment.min.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2/dist/Chart.min.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@0.5.7/chartjs-plugin-annotation.min.js"></script>
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.bundle.js"></script>-->
-
-<!--<script src="https://cdn.jsdelivr.net/combine/npm/chart.js@2,npm/moment@2"></script>-->
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
 
 <style>
@@ -50,19 +45,20 @@ background:#DDD;
 
 <body>
 
-<h1>Overseas Internet Congestion Monitor</h1>
+<h1>Global Internet Congestion Monitor</h1>
 
 <p>
 This server pings some servers around the globe to test how reliable the international internet connection is.<br>
-The servers were chosen manually from <a href="https://launchpad.net/ubuntu/+archivemirrors">Ubuntu's Archive mirrors.</a> <br>
-Command run is <span class="code">ping -q -c 100 -i 1 HOSTNAME</span>  (runs every ~50min) <br>
-This server's ISP is SK Broadband in Korea.
+The servers were chosen manually from <a href="https://launchpad.net/ubuntu/+archivemirrors">Ubuntu's Archive mirrors.</a>
+</p>
+<p>
+<?php echo $conf["PageHeaderMessage"]; ?>
 </p>
 
 <div id="graphs">
 
 <?php
-foreach($target_list as $i => $val){
+foreach($conf["TargetList"] as $i => $val){
     echo '<div class="graphdiv">';
     echo '<span class="region">'.$val["Region"].'</span> <br>';
     echo '<span class="institution">'.$val["Name"].'</span> <br>';
@@ -287,7 +283,7 @@ function setupChart(chart_id, csv_path){
 }
 
 <?php
-foreach($target_list as $i => $val){
+foreach($conf["TargetList"] as $i => $val){
     echo 'setupChart("cc_'.$val["Filename"].'", "adata/'.$val["Filename"].'.csv");';
 }
 ?>
