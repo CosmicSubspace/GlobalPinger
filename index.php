@@ -256,6 +256,7 @@ function setupChart(chart_id, csv_path){
             for (var i=0;i<datapoints.length;i++){
                 //console.log(datapoints[i]);
                 var t=new Date(datapoints[i].timestamp*1000)
+                if (t<tda_d) continue;
                 darray_rtt.push({
                     'x':t,
                     'y':datapoints[i].rtt_avg
