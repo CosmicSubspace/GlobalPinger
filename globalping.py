@@ -172,26 +172,35 @@ def pingall(targets, count=1000, interval=1):
 def parse_config():
     with open("config.json","rb") as f:
         j=json.load(f)
-    targetlist=j["TargetList"]
+    return j
 
+def targetlist_to_targetdict(targetlist):
     res=dict()
     for target in targetlist:
         res[target["Filename"]]=target["Hostname"]
-
     return res
-    
+
 def main():
     print("Parse config...")
-    ping_targets=parse_config()
-    print("Loaded",len(ping_targets),"targets.")
+    config=parse_config()
+
+    target_dict=targetlist_to_targetdict(config["TargetList"])
+    print("  ",len(target_dict),"targets.")
     
-    if "--count" in sys.argv:
-        count=int(sys.argv[sys.argv.index("--count")+1])
-    else:
-        count=10
+    count=config["PingCount"]
+    print("  ","ping count=",count)
+
+    sleep_duration=config["SleepDuration"]
+    print("  ","sleep=",sleep_duration)
+
+    while True:
+        ping_and_write_results(target_dict, count)
+        print("Sleeping for",sleep_duration)
+        time.sleep(sleep_duration)
+
+def ping_and_write_results(ping_targets, count):
+    print("\n\nPinging...")
     
-    print("Pinging...")
-    print("count =",count)
     r=pingall(
         ping_targets,
         count=count,
@@ -213,7 +222,6 @@ def main():
             if header_required:
                 writer.writerow(PingResult.csv_header())
             writer.writerow(r[i].as_csv_row())
-    print("Written.")
 
     print("Writing abridged CSV...")
     if not os.path.isdir("adata"):
