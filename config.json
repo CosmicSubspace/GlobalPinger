@@ -1,16 +1,11 @@
 {
 "TargetList":[
-    {
-        "Region":"Google",
-        "Name":"Google DNS",
-        "Hostname":"8.8.8.8",
-        "Filename":"8888"
-    },
+
     {
         "Region":"Korea",
-        "Name":"NeoWiz",
-        "Hostname":"ftp.neowiz.com",
-        "Filename":"neowiz"
+        "Name":"Harukasan",
+        "Hostname":"ftp.harukasan.org",
+        "Filename":"harukasan"
     },
     {
         "Region":"Japan",
@@ -20,9 +15,9 @@
     },
     {
         "Region":"China",
-        "Name":"DevCloud",
-        "Hostname":"mirrors.huaweicloud.com",
-        "Filename":"devcloud"
+        "Name":"Tsinghua University",
+        "Hostname":"mirrors.tuna.tsinghua.edu.cn",
+        "Filename":"tsinghua"
     },
     {
         "Region":"Singapore",
@@ -53,6 +48,12 @@
         "Name":"Melbourne IT",
         "Hostname":"ubuntu.melbourneitmirror.net",
         "Filename":"melbournit"
+    },
+        {
+        "Region":"Google",
+        "Name":"Google DNS",
+        "Hostname":"8.8.8.8",
+        "Filename":"8888"
     }
 ]
 }
