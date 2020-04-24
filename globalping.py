@@ -1,64 +1,3 @@
-'''
-
-[jaist]
-Japan
-JAIST
-http://ftp.jaist.ac.jp/pub/Linux/ubuntu/
-
-[neowiz]
-Korea
-NeoWiz
-http://ftp.neowiz.com/ubuntu/
-
-[devcloud]
-China
-DevCloud
-http://mirrors.huaweicloud.com/repository/ubuntu/
-
-[ayong]
-Singapore
-Andrew Yong
-http://mirror.0x.sg/ubuntu/
-
-[ucdavis]
-USA (West)
-University of California at Davis
-http://mirror.math.ucdavis.edu/ubuntu/
-
-[umd]
-USA (East)
-University of Maryland
-http://mirror.umd.edu/ubuntu/
-
-[oxford]
-Europe
-IT Services, University of Oxford
-http://mirror.ox.ac.uk/sites/archive.ubuntu.com/ubuntu/
-
-[melbournit]
-Austraila
-Melbourne IT
-http://ubuntu.melbourneitmirror.net/archive/
-
-[8888]
-CDN
-8.8.8.8
-
-ping -q -c 1000 
-'''
-
-ping_targets={
-    "jaist":"ftp.jaist.ac.jp",
-    "neowiz":"ftp.neowiz.com",
-    "devcloud":"mirrors.huaweicloud.com",
-    "ayong":"mirror.0x.sg",
-    "ucdavis":"mirror.math.ucdavis.edu",
-    "umd":"mirror.umd.edu",
-    "oxford":"mirror.ox.ac.uk",
-    "melbournit":"ubuntu.melbourneitmirror.net",
-    "8888":"8.8.8.8"
-    }
-
 import subprocess
 import csv
 import time
@@ -66,6 +5,7 @@ import datetime
 import os
 import os.path
 import sys
+import json
 
 class PingResult:
     def __init__(self,*, timestamp, hostname, ip, total, received, lossrate, rtt_min, rtt_avg, rtt_max, rtt_mdv):
@@ -206,6 +146,7 @@ def pingall(targets, count=1000, interval=1):
 
     starttime=time.time()
     for tname in targets:
+        #print("{:<10s} | {}".format(tname,targets[tname]))
         host=targets[tname]
         proc[tname]=subprocess.Popen(
                             ["ping",
@@ -228,14 +169,27 @@ def pingall(targets, count=1000, interval=1):
 
     return res
 
-def test():
-    print(ping("8.8.8.8"))
+def parse_config():
+    with open("config.json","rb") as f:
+        j=json.load(f)
+    targetlist=j["TargetList"]
+
+    res=dict()
+    for target in targetlist:
+        res[target["Filename"]]=target["Hostname"]
+
+    return res
     
 def main():
+    print("Parse config...")
+    ping_targets=parse_config()
+    print("Loaded",len(ping_targets),"targets.")
+    
     if "--count" in sys.argv:
         count=int(sys.argv[sys.argv.index("--count")+1])
     else:
-        count=3
+        count=10
+    
     print("Pinging...")
     print("count =",count)
     r=pingall(
@@ -243,11 +197,10 @@ def main():
         count=count,
         interval=1)
     for i in r:
-        #print(i)
-        #print(r[i])
+        print(r[i])
         #print()
         pass
-
+    
     print("Writing data to CSV...")
     if not os.path.isdir("data"):
         os.mkdir("data")

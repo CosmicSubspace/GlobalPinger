@@ -1,0 +1,58 @@
+{
+"TargetList":[
+    {
+        "Region":"Google",
+        "Name":"Google DNS",
+        "Hostname":"8.8.8.8",
+        "Filename":"8888"
+    },
+    {
+        "Region":"Korea",
+        "Name":"NeoWiz",
+        "Hostname":"ftp.neowiz.com",
+        "Filename":"neowiz"
+    },
+    {
+        "Region":"Japan",
+        "Name":"JAIST",
+        "Hostname":"ftp.jaist.ac.jp",
+        "Filename":"jaist"
+    },
+    {
+        "Region":"China",
+        "Name":"DevCloud",
+        "Hostname":"mirrors.huaweicloud.com",
+        "Filename":"devcloud"
+    },
+    {
+        "Region":"Singapore",
+        "Name":"Andrew Yong",
+        "Hostname":"mirror.0x.sg",
+        "Filename":"ayong"
+    },
+    {
+        "Region":"USA (West)",
+        "Name":"University of California at Davis",
+        "Hostname":"mirror.math.ucdavis.edu",
+        "Filename":"ucdavis"
+    },
+    {
+        "Region":"USA (East)",
+        "Name":"University of Maryland",
+        "Hostname":"mirror.umd.edu",
+        "Filename":"umd"
+    },
+    {
+        "Region":"Europe",
+        "Name":"IT Services, University of Oxford",
+        "Hostname":"mirror.ox.ac.uk",
+        "Filename":"oxford"
+    },
+    {
+        "Region":"Austraila",
+        "Name":"Melbourne IT",
+        "Hostname":"ubuntu.melbourneitmirror.net",
+        "Filename":"melbournit"
+    }
+]
+}

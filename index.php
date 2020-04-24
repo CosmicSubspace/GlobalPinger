@@ -1,3 +1,12 @@
+<?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+$conf= json_decode(file_get_contents("config.json"),True);
+$target_list=$conf["TargetList"];
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -52,68 +61,19 @@ This server's ISP is SK Broadband in Korea.
 
 <div id="graphs">
 
-<div id="korea">
-<span class="region">Korea</span> <br>
-<span class="institution">NeoWiz</span> <br>
-<span class="hostname">ftp.neowiz.com</span>
-<canvas class="chartcanvas" id="cc_neowiz" width="600" height="300"></canvas>
-</div>
+<?php
+foreach($target_list as $i => $val){
+    echo '<div class="graphdiv">';
+    echo '<span class="region">'.$val["Region"].'</span> <br>';
+    echo '<span class="institution">'.$val["Name"].'</span> <br>';
+    echo '<span class="hostname">'.$val["Hostname"].'</span>';
+    echo '<canvas class="chartcanvas" id="cc_'.$val["Filename"].'" width="600" height="300"></canvas>';
+    echo '</div>';
+}
+?>
 
-<div id="japan">
-<span class="region">Japan</span> <br>
-<span class="institution">JAIST</span> <br>
-<span class="hostname">ftp.jaist.ac.jp</span>
-<canvas class="chartcanvas" id="cc_jaist" width="600" height="300"></canvas>
-</div>
 
-<div id="china">
-<span class="region">China</span> <br>
-<span class="institution">DevCloud</span> <br>
-<span class="hostname">mirrors.huaweicloud.com</span>
-<canvas class="chartcanvas" id="cc_devcloud" width="600" height="300"></canvas>
-</div>
 
-<div id="singapore">
-<span class="region">Singapore</span> <br>
-<span class="institution">Andrew Yong</span> <br>
-<span class="hostname">mirror.0x.sg</span>
-<canvas class="chartcanvas" id="cc_ayong" width="600" height="300"></canvas>
-</div>
-
-<div id="usa_west">
-<span class="region">USA - West</span> <br>
-<span class="institution">University of California at Davis</span> <br>
-<span class="hostname">mirror.math.ucdavis.edu</span>
-<canvas class="chartcanvas" id="cc_ucdavis" width="600" height="300"></canvas>
-</div>
-
-<div id="usa_east">
-<span class="region">USA - East</span> <br>
-<span class="institution">University of Maryland</span> <br>
-<span class="hostname">mirror.umd.edu</span>
-<canvas class="chartcanvas" id="cc_umd" width="600" height="300"></canvas>
-</div>
-
-<div id="uk">
-<span class="region">UK</span> <br>
-<span class="institution">IT Services, University of Oxford</span> <br>
-<span class="hostname">mirror.ox.ac.uk</span>
-<canvas class="chartcanvas" id="cc_oxford" width="600" height="300"></canvas>
-</div>
-
-<div id="austraila">
-<span class="region">Austraila</span> <br>
-<span class="institution">Melbourne IT</span> <br>
-<span class="hostname">ubuntu.melbourneitmirror.net</span>
-<canvas class="chartcanvas" id="cc_melbournit" width="600" height="300"></canvas>
-</div>
-
-<div id="8888">
-<span class="region">Google</span> <br>
-<span class="institution">Google DNS</span> <br>
-<span class="hostname">8.8.8.8</span>
-<canvas class="chartcanvas" id="cc_8888" width="600" height="300"></canvas>
-</div>
 
 </div>
 
@@ -326,15 +286,12 @@ function setupChart(chart_id, csv_path){
     });
 }
 
-setupChart("cc_neowiz", "adata/neowiz.csv");
-setupChart("cc_jaist", "adata/jaist.csv");
-setupChart("cc_devcloud", "adata/devcloud.csv");
-setupChart("cc_ayong", "adata/ayong.csv");
-setupChart("cc_ucdavis", "adata/ucdavis.csv");
-setupChart("cc_umd", "adata/umd.csv");
-setupChart("cc_oxford", "adata/oxford.csv");
-setupChart("cc_melbournit", "adata/melbournit.csv");
-setupChart("cc_8888", "adata/8888.csv");
+<?php
+foreach($target_list as $i => $val){
+    echo 'setupChart("cc_'.$val["Filename"].'", "adata/'.$val["Filename"].'.csv");';
+}
+?>
+
 
 
 </script>
